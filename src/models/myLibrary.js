@@ -1,5 +1,5 @@
 
-import { getConnection } from "../databases/mysql"
+import { connection, createConnect, getConnection } from "../databases/mysql"
 
 export const getAll = async ($table) => {
     try {
@@ -17,7 +17,9 @@ export const getOne = async ($id, $table) => {
         console.log(error);
     }
 }
-
+// supper admin: làm được tất cả
+// admin : làm đc tất cả chỉ không được xóa admin đi 
+// user: tải phiển
 export const deleteData = async ($id, $table) => {
     try {
         let deleteOne = await getConnection.query(`delete  from ? where id = ?`, [$table, $id])
@@ -28,7 +30,7 @@ export const deleteData = async ($id, $table) => {
 }
 export const createData = async ($table,$data)=>{
    try {
-    let createData = await getConnection.query(`INSERT INTO ? SET ?`,[$table,$data]);
+    let createData = await connection.query("INSERT INTO ? SET ?",[$table,$data]);
     return createData;
    } catch (error) {
     console.log(error);

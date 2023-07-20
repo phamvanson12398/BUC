@@ -1,9 +1,8 @@
 import express from "express"
+import userController from "../controllers/userController";
 let route = express.Router();
 
 export const initRoute = (app)=>{
-    route.get('/',(req,res)=>{
-        console.log('Trang Chu');
-    })
+    route.post('/',userController.createUser)
     return app.use('/',route)
 }

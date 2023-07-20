@@ -1,8 +1,8 @@
 import mysql from "mysql2"
 import dotenv from "dotenv/config"
-let connection;
+export let connection;
 
-const createConnect = () => {
+export const createConnect = () => {
     return new Promise((resolve, reject) => {
         if (!connection) {
             connection = mysql.createConnection(
@@ -19,7 +19,7 @@ const createConnect = () => {
                     return reject(error);
                 }
                 console.log("Connected to database!");
-                return resolve();
+                return resolve(connection);
             })
         }
     })
