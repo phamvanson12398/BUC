@@ -24,23 +24,21 @@ export const getOne = async (id, table) => {
 // user: tải phiển
 export const deleteData = async (id, table) => {
     try {
-        const connection = await getConnection();
-        let deleteOne =  connection.query(`delete  from ${table} where id = ?`,id)
-        return deleteOne
+        let deleteOne = await getConnection.query(`delete  from ? where id = ?`, [$table, $id])
+        return deleteData
     } catch (error) {
         console.log(error);
     }
 }
-export const createData = async (table,data)=>{
-    try {
-     const connection = await getConnection();
-     const create =  connection.query(`insert into ${table} SET ?`,data);
-     return data;
-    } catch (error) {
-     console.log(error);
-    }
- }
-export const updateData = async (table,id,data)=>{
+export const createData = async ($table,$data)=>{
+   try {
+    let createData = await connection.query("INSERT INTO ? SET ?",[$table,$data]);
+    return createData;
+   } catch (error) {
+    console.log(error);
+   }
+}
+export const updateData = async ($table,$id,$data)=>{
     try {
         const connection = await getConnection();
      let updateData = await connection.query(`UPDATE ${table} SET ? WHERE id = ?`,[data,id]);
