@@ -23,7 +23,7 @@ export const getOne = async ($id, $table) => {
 export const deleteData = async ($id, $table) => {
     try {
         let deleteOne = await getConnection.query(`delete  from ? where id = ?`, [$table, $id])
-        return deleteData
+        return deleteOne
     } catch (error) {
         console.log(error);
     }
@@ -31,12 +31,10 @@ export const deleteData = async ($id, $table) => {
 export const createData = async ($table,$data)=>{
    try {
     const connection = await getConnection();
-    console.log("$data", $data);
-    console.log("$data", $table);
-    const data =  connection.query("INSERT INTO ? SET ?",[$table,$data]);
-    console.log(data);
+    const create =  connection.query("INSERT INTO ? SET ?",[$table,$data]);
+    
     // let createData = await getConnection.query("INSERT INTO ? SET ?",[$table,$data]);
-    return data;
+    return $data;
    } catch (error) {
     console.log(error);
    }

@@ -40,9 +40,9 @@ export const initDataMysql = () => {
             user: process.env.DB_USER,
             password: process.env.DB_PASSWORD
         });
-        console.log("process.env.DB_HOST", process.env.DB_HOST);
-        console.log("process.env.DB_HOST", process.env.DB_USER);
-        console.log("process.env.DB_HOST", process.env.DB_PASSWORD);
+        // console.log("process.env.DB_HOST", process.env.DB_HOST);
+        // console.log("process.env.DB_HOST", process.env.DB_USER);
+        // console.log("process.env.DB_HOST", process.env.DB_PASSWORD);
         connection.query(
             `CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`,
             (error, results) => {
@@ -109,7 +109,7 @@ export const initTable = () => {
                 connection.end()
                 return reject(err)
             }
-            console.log("Table created successfully!");
+            // console.log("Table created successfully!");
             // connection.end()
             return resolve()
         })
@@ -120,7 +120,7 @@ export const initTable = () => {
                 connection.end()
                 return reject(err)
             }
-            console.log("Table created successfully!");
+            // console.log("Table created successfully!");
             // connection.end()
             return resolve()
         })
@@ -130,7 +130,7 @@ export const initTable = () => {
                 connection.end()
                 return reject(err)
             }
-            console.log("Table created successfully!");
+            // console.log("Table created successfully!");
             // connection.end()
             return resolve()
         })
@@ -140,7 +140,7 @@ export const initTable = () => {
                 connection.end()
                 return reject(err)
             }
-            console.log("Table created successfully!");
+            // console.log("Table created successfully!");
             // connection.end()
             return resolve()
         })
@@ -150,7 +150,7 @@ export const initTable = () => {
                 connection.end()
                 return reject(err)
             }
-            console.log("Table created successfully!");
+            // console.log("Table created successfully!");
             // connection.end()
             return resolve()
         })
