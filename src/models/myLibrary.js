@@ -30,8 +30,13 @@ export const deleteData = async ($id, $table) => {
 }
 export const createData = async ($table,$data)=>{
    try {
-    let createData = await connection.query("INSERT INTO ? SET ?",[$table,$data]);
-    return createData;
+    const connection = await getConnection();
+    console.log("$data", $data);
+    console.log("$data", $table);
+    const data =  connection.query("INSERT INTO ? SET ?",[$table,$data]);
+    console.log(data);
+    // let createData = await getConnection.query("INSERT INTO ? SET ?",[$table,$data]);
+    return data;
    } catch (error) {
     console.log(error);
    }

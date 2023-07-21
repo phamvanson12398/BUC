@@ -88,7 +88,7 @@ export const initTable = () => {
             password VARCHAR(255) NOT NULL,
             email VARCHAR(255) NOT NULL,
             phone INT(10) NOT NULL,
-            permission_id INT(11) NOT NULL,
+            permission_id INT(11),
             FOREIGN KEY (permission_id) REFERENCES permissions(id)
         );
         `;

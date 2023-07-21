@@ -11,8 +11,9 @@ initRoute(app)
 
 
 app.listen(port, async (req, res) => {
-    await getConnection();
     await initDataMysql();
+    await getConnection();
+
     await initTable()
     console.log(`running http://localhost:${port}`)
 })
