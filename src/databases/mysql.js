@@ -83,7 +83,7 @@ export const initTable = () => {
           `;
         const users =`
         CREATE TABLE IF NOT EXISTS users (
-            id INT(11) DEFAULT NULL AUTO_INCREMENT PRIMARY KEY,
+            id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
             user_name VARCHAR(255) NOT NULL,
             password VARCHAR(255) NOT NULL,
             email VARCHAR(255) NOT NULL,
