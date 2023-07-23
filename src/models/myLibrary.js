@@ -57,3 +57,9 @@ export const updateData = async (table, id, data) => {
     console.log(error);
   }
 };
+ export const checkUser = async (email)=>{
+  const connection = await getConnection();
+  const userEmail = await connection.query(`select * from users where email = ?`,email);
+ 
+ return userEmail[0];
+ }

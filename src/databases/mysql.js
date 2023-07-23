@@ -1,26 +1,20 @@
-
 import mysql from "mysql2/promise";
 import dotenv from "dotenv/config";
 
 let connection;
-
 export const createConnect = async () => {
     if (!connection) {
-        
-
         try {
             connection = await mysql.createConnection({
                 host: process.env.DB_HOST,
                 user: process.env.DB_USER,
                 database: process.env.DB_NAME,
-                password: process.env.DB_PASSWORD,
+                password: process.env.DB_PASSWORD
             });
         } catch (error) {
             console.log("Error connecting to the database:", error);
-            
         }
     }
-
     return connection;
 };
 
@@ -33,16 +27,26 @@ export const getConnection = async () => {
 
 export const initDataMysql = async () => {
     try {
-        const connection = await getConnection(); 
-       await connection.query(`CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
+    const connection = await mysql.createConnection({
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD
+    });
+      
+  
+      await connection.query(
+        `CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`
+      );
+  
+  
+   
     } catch (error) {
-        console.log(`Init mysql database ${process.env.DB_NAME} failed: ${error?.message || JSON.stringify(error)}`);
+      console.log(`Init mysql database ${process.env.DB_NAME} failed: ${error?.message || JSON.stringify(error)}`);
     }
-};
-
+  };
 export const initTable = async () => {
     try {
-        const connection = await createConnect(); 
+        const connection = await getConnection(); 
 
         const mail_server = `
             CREATE TABLE IF NOT EXISTS mail_server (
@@ -96,6 +100,6 @@ export const initTable = async () => {
         // console.log("Tables created successfully!");
     } catch (error) {
         console.log("Error creating tables:", error);
-        throw error;
+       
     }
 };
