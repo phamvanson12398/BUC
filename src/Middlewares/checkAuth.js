@@ -26,7 +26,7 @@ import ajv from "ajv"
 
 const checkLogin = (req,res,next)=>{
     const bearToken = req.header('Authorization');
-    console.log(bearToken);
+    
     if (!bearToken || !bearToken.startsWith('Bearer')) {
         return res.status(401).json({
             message: "Bạn chưa đăng nhập"
@@ -35,11 +35,12 @@ const checkLogin = (req,res,next)=>{
     const token = bearToken.split(" ")[1]
     jwt.verify(token, process.env.SECRECT_ACCESS_TOKEN, (err, decode) => {
         if (err) {
-            console.log(err);
+            
             return res.status(401).json({ message: 'Invalid access token' });
         }
         else {
-            req.user = decode
+           req.user_id = decode.id;
+          
            next()
         }
     })

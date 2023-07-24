@@ -80,7 +80,12 @@ export const initTable = async () => {
                 permission_id INT(11) NOT NULL,
                 FOREIGN KEY (permission_id) REFERENCES permissions(id)
             )`;
-
+        const devices =`
+            CREATE TABLE IF NOT EXISTS devices (
+                id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                device_name VARCHAR(255)
+                )
+            `   
         const versions = `
             CREATE TABLE IF NOT EXISTS versions (
                 id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -88,16 +93,29 @@ export const initTable = async () => {
                 type_file VARCHAR(255) NOT NULL,
                 modified DATETIME NOT NULL,
                 total_size INT(11) NOT NULL,
-                description VARCHAR(255) NOT NULL
+                description VARCHAR(255) NOT NULL,
+                device_id INT(11) NOT NULL ,
+                FOREIGN KEY (device_id) REFERENCES devices(id)
             )`;
-
+        
+        const refToken = `
+        CREATE TABLE IF NOT EXISTS refTokens (
+            id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            token VARCHAR(255)  NOT NULL,
+            user_id INT(11) NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+        `;
+           
         await connection.query(mail_server);
         await connection.query(mail_sender);
         await connection.query(permissions);
         await connection.query(users);
+        await connection.query(devices);
         await connection.query(versions);
-
-        // console.log("Tables created successfully!");
+        await connection.query(refToken);
+        console.log("Tables created successfully!");
     } catch (error) {
         console.log("Error creating tables:", error);
        

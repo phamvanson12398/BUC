@@ -1,7 +1,7 @@
 
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
-import {  createData, deleteData, getAll, getOne, updateData } from "../models/myLibrary"
+import { createData, deleteData, getAll, getOne, updateData } from "../models/myLibrary"
 const table = "users";
 export const getUser = async (req, res) => {
     try {
@@ -48,21 +48,23 @@ export const createUser = async (req, res) => {
         phone: req.body.phone,
         permission_id: req.body.permission_id
     }
-    // console.log(data);
     try {
-        await createData(table, data);
+        const create = await createData(table, data);
         const User = await getAll('users');
-        return res.status(201).json({
-            message: "Created User success",
-            data: User[0]
-        })
-    } catch (error) {
-        console.log(error)
-    }
-    return res.status(400).json({
-        message: "Created User error",
+        if (create) {
+            return res.status(201).json({
+                message: "Created User success",
+                data: User[0]
+            })
+        }
 
-    })
+    } catch (error) {
+        console.log("loi roi")
+        return res.status(400).json({
+            message: "Created User error"
+        })
+    }
+
 }
 const deleteUser = async (req, res) => {
     const id = req.params.id;

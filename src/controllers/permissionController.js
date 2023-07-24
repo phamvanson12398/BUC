@@ -38,16 +38,20 @@ const table = 'permissions'
         description : req.body.description
     }
     try {
-         await createData(table,data);
+        const create = await createData(table,data);
         const permissions = await getAll(table);
-        return res.status(200).json({
-            message:"Create Data Success",
-            data:permissions[0]
-        });
+        
+        if(create){
+            return res.status(200).json({
+                message:"Create Data Success",
+                data:permissions[0]
+            });
+        }
+        
     } catch (error) {
         return res.status(500).json({
             message:"Create Data error",
-            err:error
+            
         });
     }
 }
