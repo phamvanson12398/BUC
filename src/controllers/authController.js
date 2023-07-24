@@ -10,7 +10,7 @@ const generateAccessToken = (user_name,email,phone, permission_id) => {
         email:email,
         phone:phone,
         permission_id: permission_id
-    }, process.env.SECRECT_ACCESS_TOKEN, { expiresIn: "4m" })
+    }, process.env.SECRECT_ACCESS_TOKEN, { expiresIn: "2h" })
     // console.log(token);
     return token;
 }

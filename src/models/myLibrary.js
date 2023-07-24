@@ -16,13 +16,13 @@ export const getOne = async (id, table) => {
       `select * from ${table} where id = ?`,
       id
     );
-    return dataOne;
+    return dataOne[0];
   } catch (error) {
     console.log(error);
   }
 };
 // supper admin: làm được tất cả
-// admin : làm đc tất cả chỉ không được xóa admin đi
+// admin : làm đc tất cả chỉ không được xóa admin đi,tai len phien ban 
 // user: tải phiển
 export const deleteData = async (id, table) => {
   try {

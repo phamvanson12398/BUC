@@ -22,7 +22,7 @@ const getOneUser = async (req, res) => {
         const User = await getOne(id, table);
         return res.status(201).json({
             message: "Get Data Success",
-            data: User[0]
+            data: User
         })
     } catch (error) {
         return res.status(500).json({
@@ -48,7 +48,7 @@ export const createUser = async (req, res) => {
         phone: req.body.phone,
         permission_id: req.body.permission_id
     }
-    console.log(data);
+    // console.log(data);
     try {
         await createData(table, data);
         const User = await getAll('users');
