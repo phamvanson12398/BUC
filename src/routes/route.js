@@ -4,7 +4,8 @@ import permissionController from "../controllers/permissionController";
 import authController from "../controllers/authController";
 import checkAuth from "../Middlewares/checkAuth";
 import checkPermission from "../Middlewares/checkPermission";
-import { upfile } from "../controllers/versionController";
+import multer from "multer"
+// import { upfile } from "../controllers/versionController";
 
 let route = express.Router();
 
@@ -20,10 +21,30 @@ export const initRoute = (app)=>{
     route.post('/permission/create',checkPermission.checkAdmin,permissionController.createPermission)
     route.delete('/permission/delete/:id',checkPermission.checkAdmin,permissionController.deletePermission)
     route.put('/permission/:id',checkPermission.checkAdmin,permissionController.updatePermission)
-    route.post('/upload', upfile, (req, res) => {
-        // Đoạn code xử lý sau khi file đã được tải lên thành công
-        res.send('File đã được tải lên thành công.');
-      });
+    route.post('/upfile',(req,res,next)=>{
+        const  storage = multer.diskStorage({
+            destination: function (req, file, cb) {
+              cb(null, 'uploads')
+            },
+            filename: function (req, file, cb) {
+              cb(null, file.fieldname + '-' + Date.now())
+            }
+          })
+           
+          multer({ storage: storage }).single("myfile")
+          next()
+    } , (req, res,next) => {
+        const file = req.file
+        console.log(req.file);
+        if (!file) {
+          const error = new Error('Please upload a file')
+          error.httpStatusCode = 400
+          return next("khoong load dc")
+        }
+        res.send(file)
+      })
+    
+     
     route.post('/refreshtk',checkAuth.authToken,authController.refreshToken)
     route.post('/login',checkAuth.checkForm,authController.login)
     route.post('/logout',checkAuth.checkLogin,authController.logout)
