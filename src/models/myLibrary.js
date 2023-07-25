@@ -46,11 +46,11 @@ export const updateData = async (table, id, data) => {
     console.log(error);
   }
 };
-export const checkUser = async (email) => {
+export const checkUser = async (user_name) => {
   const connection = await getConnection();
-  const userEmail = await connection.query(`select * from users where email = ?`, email);
+  const userName = await connection.query(`select * from users where user_name = ?`, user_name);
 
-  return userEmail[0];
+  return userName[0];
 }
 export const deleteData = async (id, table) => {
   try {

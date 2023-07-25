@@ -29,7 +29,7 @@ const checkLogin = (req,res,next)=>{
     
     if (!bearToken || !bearToken.startsWith('Bearer')) {
         return res.status(401).json({
-            message: "Bạn chưa đăng nhập"
+            message: "You are not logged in"
         })
     }
     const token = bearToken.split(" ")[1]
@@ -47,18 +47,12 @@ const checkLogin = (req,res,next)=>{
 }
 const checkForm = (req,res,next)=>{
     const Ajv = new ajv();
-    Ajv.addFormat('email', (data) => {
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailPattern.test(data);
-      });
-
      const authSchema = {
         type: "object",
         properties: {
           
-          email: {
+          user_name: {
             type: "string",
-            format:"email",
           },
           password: {
             type: "string",
@@ -66,7 +60,7 @@ const checkForm = (req,res,next)=>{
             maxLength: 24,
           },
         },
-        required: ["email", "password"],
+        required: ["user_name", "password"],
         additionalProperties: false,
       };
     const data = req.body;
@@ -75,7 +69,7 @@ const checkForm = (req,res,next)=>{
     const check = validate(data)
     if(!check){
         return res.status(400).json({
-            message:"Enter the correct email format and the character must be longer than 8"
+            message:"Enter the correct user and the character must be longer than 8"
         })
     }else{
         next()

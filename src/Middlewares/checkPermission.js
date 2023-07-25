@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken"
-import { getOne } from "../models/myLibrary";
+import { checkUser, getOne } from "../models/myLibrary";
 const table = 'users';
 
-const checkAdmin = (req,res,next)=>{
+const checkAdmin =  (req,res,next)=>{
     const bearToken = req.header('Authorization');
     
     if (!bearToken || !bearToken.startsWith('Bearer')) {
@@ -11,18 +11,21 @@ const checkAdmin = (req,res,next)=>{
         })
     }
     const token = bearToken.split(" ")[1]
-    jwt.verify(token, process.env.SECRECT_ACCESS_TOKEN, (err, decode) => {
+    jwt.verify(token, process.env.SECRECT_ACCESS_TOKEN,async (err, decode) => {
         if (err) {
-            console.log(err);
             return res.status(401).json({ message: 'Invalid access token' });
         }
         else {
-            if(decode.permission_id == 1 || decode.permission_id == 2  ){
-                req.user= decode
+            // console.log(decode);
+            const user = await checkUser(decode.user_name)
+            // console.log(user[0].permission_id);
+            if(user[0].permission_id == 1 || user[0].permission_id == 2  ){
+                req.user= user
                 next()
             }
             else{
                return res.status(403).json({
+                
                 message:'Ban khong co quyen truy cap!'
                })
             }

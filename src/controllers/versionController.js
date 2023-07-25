@@ -1,24 +1,18 @@
-import multer from "multer";
 
+import uploadManyFiles from "../Middlewares/multipleUploadMiddleware"
 
-
-
-export const upfile = async (req,res,next)=>{
-    const storage = multer.diskStorage({
-        destination: function (req, file, cb) {
-          return (null, 'storage/') // Lưu trữ file trong thư mục 'uploads/'
-        },
-        filename: function (req, file, cb) {
-          cb(null, Date.now() + '-' + file.originalname); // Đặt tên file dựa trên thời gian và tên gốc của file
-        }
-      });
-      
-      // Tạo một middleware upload
-      const upload = multer({ storage: storage });
-        const file = upload.single('filename')
-    console.log(storage);
-    console.log(upload);      
-    console.log(file);
-
-} //đặt ở route
-
+let multipleUpload = async (req, res) => {
+  try {
+    
+    await uploadManyFiles(req, res);
+    if (req.files.length <= 0) {
+      return res.send(`You must select at least 1 file or more.`);
+    }
+   console.log(req.files);
+    return res.send(`Your files has been uploaded.`);
+  } catch (error) {
+    console.log(error);
+    return res.send(`Error when trying upload many files: ${error}}`);
+  }
+};
+export default multipleUpload

@@ -73,7 +73,7 @@ export const initTable = async () => {
         const users = `
             CREATE TABLE IF NOT EXISTS users (
                 id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                user_name VARCHAR(255) NOT NULL,
+                user_name VARCHAR(255) NOT NULL unique,
                 password VARCHAR(255) NOT NULL,
                 email VARCHAR(255) NOT NULL unique,
                 phone INT(10) NOT NULL,

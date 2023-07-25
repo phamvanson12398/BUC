@@ -2,6 +2,7 @@
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { createData, deleteData, getAll, getOne, updateData } from "../models/myLibrary"
+import { error } from "ajv/dist/vocabularies/applicator/dependencies";
 const table = "users";
 export const getUser = async (req, res) => {
     try {
@@ -49,9 +50,14 @@ export const createUser = async (req, res) => {
         permission_id: req.body.permission_id
     }
     try {
+        
         const create = await createData(table, data);
-        const User = await getAll('users');
+        let User = await getAll('users');
+        for (let i = 0; i < User[0].length; i++) {
+            delete User[0][i].password;
+          }
         if (create) {
+           
             return res.status(201).json({
                 message: "Created User success",
                 data: User[0]
@@ -59,7 +65,6 @@ export const createUser = async (req, res) => {
         }
 
     } catch (error) {
-        console.log("loi roi")
         return res.status(400).json({
             message: "Created User error"
         })
