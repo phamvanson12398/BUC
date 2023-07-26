@@ -4,7 +4,9 @@ import permissionController from "../controllers/permissionController";
 import authController from "../controllers/authController";
 import checkAuth from "../Middlewares/checkAuth";
 import checkPermission from "../Middlewares/checkPermission";
-import { upfile } from "../controllers/versionController";
+import uploadController from "../controllers/uploadController";
+import deviceController from "../controllers/deviceController";
+
 
 let route = express.Router();
 
@@ -20,10 +22,18 @@ export const initRoute = (app)=>{
     route.post('/permission/create',checkPermission.checkAdmin,permissionController.createPermission)
     route.delete('/permission/delete/:id',checkPermission.checkAdmin,permissionController.deletePermission)
     route.put('/permission/:id',checkPermission.checkAdmin,permissionController.updatePermission)
-    route.post('/upload', upfile, (req, res) => {
-        // Đoạn code xử lý sau khi file đã được tải lên thành công
-        res.send('File đã được tải lên thành công.');
-      });
+
+
+    route.get('/device',checkAuth.checkLogin,deviceController.getAlldevice)
+    route.get('/device/:id',checkAuth.checkLogin,deviceController.getOneDevice)
+    route.post('/device/create',checkPermission.checkAdmin,deviceController.createDevice)
+    route.delete('/device/delete/:id',checkPermission.checkAdmin,deviceController.deleteDevice)
+    route.put('/device/:id',checkPermission.checkAdmin,deviceController.updateDevice)
+
+
+    route.post('/upfile',uploadController.file)
+    route.post('/download',uploadController.downloadFile)
+
     route.post('/refreshtk',checkAuth.authToken,authController.refreshToken)
     route.post('/login',checkAuth.checkForm,authController.login)
     route.post('/logout',checkAuth.checkLogin,authController.logout)

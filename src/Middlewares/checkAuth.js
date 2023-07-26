@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
 import ajv from "ajv"
+import { checkUser } from "../models/myLibrary"
+
  const authToken = (req,res,next)=>{
     const tokenBearer = req.header('Authorization')
     if(!tokenBearer || !tokenBearer.startsWith("Bearer")){
@@ -9,7 +11,8 @@ import ajv from "ajv"
         })
     }
    const token = tokenBearer.split(" ")[1]
-    jwt.verify(token,process.env.SECRECT_REFRESH_TOKEN,(err,decode)=>{
+    jwt.verify(token,process.env.SECRECT_REFRESH_TOKEN,async (err,decode)=>{
+        const user = await checkUser(decode.user_name)
         if(err){
             console.log(err);
             return res.status(401).json({
@@ -17,7 +20,7 @@ import ajv from "ajv"
             })
         }
         else{
-            req.user = decode;
+            req.user = user[0];
             
             next()
         }

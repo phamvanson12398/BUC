@@ -1,23 +1,22 @@
-
 import { createData, deleteData, getAll, getOne, updateData } from "../models/myLibrary"
-const table = 'versions'
- const getAllVersion= async (req,res)=>{
+const table = 'devices'
+ const getAlldevice= async (req,res)=>{
     try {
-        const version = await getAll(table);
+        const devices = await getAll(table);
         return res.status(200).json({
             message:"Get Data Success",
-            data:version[0]
+            data:devices[0]
         });
     } catch (error) {
         return res.status(500).json({
-            message:`Get Data error:${error}`
-       
+            message:"Get Data error",
+            err:error
         });
     }
     
 }
 
- const getOneVersion = async (req,res)=>{
+ const getOneDevice = async (req,res)=>{
     const id= req.params.id;
     try {
         const data = await getOne(id,table);
@@ -27,7 +26,8 @@ const table = 'versions'
         });
     } catch (error) {
         return res.status(500).json({
-          message:`Get Data error:${error}`
+            message:"Get Data error",
+            err:error
         });
     }
 }

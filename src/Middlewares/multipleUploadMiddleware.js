@@ -1,17 +1,25 @@
-import util from "util"
-import path from "path"
-import multer from "multer"
+
 
 let storage = multer.diskStorage({
   
   destination: (req, file, callback) => {
-    callback(null, path.join(`${__dirname}/../../storage`));
+    callback(null, path.join(`${__dirname}/../storage`));
   },
   filename: (req, file, callback) => {
     let filename = `${Date.now()}--${file.originalname}`;
     callback(null, filename);
   }
 });
-let uploadManyFiles = multer({storage: storage}).array("filename", 5);
-let multipleUploadMiddleware = util.promisify(uploadManyFiles);
-export default multipleUploadMiddleware
+let uploadFile = multer({storage: storage,limits: {
+  fileSize: 15000000000
+},
+fileFilter: async function (req, file, callback) {
+  const ext = path.extname(file.originalname);
+  if( ext !== '.zip') {
+    
+      return callback(new Error('Only zip are allowed'));
+  }
+  callback(null, true); 
+},}).single("filename");
+
+export default uploadFile
