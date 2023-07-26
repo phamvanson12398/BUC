@@ -30,8 +30,16 @@ export const initRoute = (app)=>{
     route.delete('/device/delete/:id',checkPermission.checkAdmin,deviceController.deleteDevice)
     route.put('/device/:id',checkPermission.checkAdmin,deviceController.updateDevice)
 
+    route.get('/version',checkAuth.checkLogin,versionController.getAllVersion)
+    route.get('/version/:id',checkAuth.checkLogin,versionController.getOneVersion)
+    route.post('/version/create',checkPermission.checkAdmin,versionController.createVersion)
+    route.delete('/version/delete/:id',checkPermission.checkAdmin,versionController.deleteVersion)
+    route.put('/version/:id',checkPermission.checkAdmin,versionController.updateVersion)
 
-    route.post('/upfile',uploadController.uploadFile,versionController.createVersion)
+
+    route.post('/upfile',uploadController.uploadFile,uploadController.addFile)
+    route.get('/file',uploadController.getAllFiles)
+    route.put('/file/:id',uploadController.updateVersion)
     route.post('/download',uploadController.downloadFile)
 
     route.post('/refreshtk',checkAuth.authToken,authController.refreshToken)

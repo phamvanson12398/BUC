@@ -4,14 +4,16 @@ const table = 'versions'
  const getAllVersion= async (req,res)=>{
     try {
         const version = await getAll(table);
-        return res.status(200).json({
+        if(version){
+            return res.status(200).json({
             message:"Get Data Success",
             data:version[0]
         });
+        }
+        
     } catch (error) {
         return res.status(500).json({
             message:`Get Data error:${error}`
-       
         });
     }
     
@@ -21,10 +23,13 @@ const table = 'versions'
     const id= req.params.id;
     try {
         const data = await getOne(id,table);
-        return res.status(200).json({
+        if(data){
+            return res.status(200).json({
             message:"Get Data Success",
             data:data
         });
+        }
+        
     } catch (error) {
         return res.status(500).json({
           message:`Get Data error:${error}`
@@ -33,29 +38,49 @@ const table = 'versions'
 }
 
  const createVersion = async (req,res)=>{
+
    const data ={
-    
+    version_name : req.body.version_name,
+    type_file:req.body.type_file,
+    modified : new Date(),
+    total_size : req.body.total_size,
+    description:req.body.description,
+    device_id :req.body.device_id
    }
-        console.log(req.file);
-        return res.status(200).json({
-          message:"success"
+       try {
+        const create = await createData(table,data);
+        if(create){
+            const version = await getAll(table);
+            return res.status(200).json({
+                message:"create success",
+                data:version[0]
+            })
+        }
+       } catch (error) {
+        return res.status(500).json({
+            message:"create error",
+            
         })
+       }
       
 }
 
  const deleteVersion = async (req,res)=>{
     const id = req.params.id;
     try {
-         await deleteData(id,table);
-        const device = await getAll(table);
+        const del= await deleteData(id,table);
+        if(del){
+            const version = await getAll(table);
         return res.status(200).json({
             message:"Delete Data Success",
-            data:device[0]
+            data:version[0]
         });
+        }
+        
     } catch (error) {
         return res.status(500).json({
             message:"Delete Data error",
-            err:error
+           
         });
     }
 }
@@ -63,20 +88,27 @@ const table = 'versions'
  const updateVersion = async (req,res)=>{
     const id = req.params.id;
     const data ={
-        device_name:req.body.device_name,
-        
-    }
+        version_name : req.body.version_name,
+        type_file:req.body.type_file,
+        modified : new Date(),
+        total_size : req.body.total_size,
+        description:req.body.description,
+        device_id :req.body.device_id
+       }
     try {
-        updateData(table,id,data);
-        const device = await getAll(table);
+       const ud= updateData(table,id,data);
+       if(ud){
+        const version = await getAll(table);
         return res.status(200).json({
             message:"Delete Data Success",
-            data:device[0]
+            data:version[0]
         });
+       }
+        
     } catch (error) {
         return res.status(500).json({
             message:"Update Data error",
-            err:error
+           
         });
     }
 }

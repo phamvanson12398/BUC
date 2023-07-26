@@ -113,6 +113,7 @@ export const initTable = async () => {
             name VARCHAR(255)  NOT NULL,
             type_file VARCHAR(255) NOT NULL,
             content TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            path VARCHAR(255) NOT NULL,
             version_id INT(11) NOT NULL,
             FOREIGN KEY (version_id) REFERENCES versions(id)
         )
