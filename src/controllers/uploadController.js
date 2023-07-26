@@ -2,42 +2,31 @@ import fs from "fs"
 import http from "http"
 import path from "path"
 import multer from "multer"
-const file = (req,res)=>{
-    let storage = multer.diskStorage({
-        destination: (req, file, callback) => {
-          callback(null, path.join(`${__dirname}/../storage`));
-        },
-        filename: (req, file, callback) => {
-          let filename = `${Date.now()}--${file.originalname}`;
-          callback(null, filename);
-        }
-      });
-      let uploadFile =  multer({storage: storage,limits: {
-        fileSize: 15000000000
-      },
-      fileFilter:  function (req, file, callback) {
-        const ext = path.extname(file.originalname);
-        if( ext !== '.zip') {
-          
-            return callback(new Error('Only zip are allowed'));
-        }
-        callback(null, true); 
-      },}).single("filename");
-      console.log(req);
-       if(req.file){
-        console.log(req.file);
-        return res.status(200).json({
-            
-            message:"upload success"
-        })
-       }else{
-        return res.status(400).json({
-            message:"error"
-        })
-       }
+
+
+let storage = multer.diskStorage({
+  
+  destination: (req, file, callback) => {
+    callback(null, path.join(`${__dirname}/../storage`));
+  },
+  filename: (req, file, callback) => {
+    let filename = `${Date.now()}--${file.originalname}`;
+    callback(null, filename);
+  }
+});
+let uploadFile = multer({storage: storage,limits: {
+  fileSize: 15000000000
+},
+fileFilter: async function (req, file, callback) {
+  const ext = path.extname(file.originalname);
+  if( ext !== '.zip') {
     
-    
-}
+      return callback(new Error('Only zip are allowed'));
+  }
+  callback(null, true); 
+},}).single("filename");
+
+      
 const downloadFile = (req,res)=>{
     const fileUrl = '/home/longbt/Desktop/BUC/BUC/src/storage/1690339554551--NIPS.zip';
     const downloadPath = './file-to-download.txt'; // Đường dẫn tới nơi lưu tập tin sau khi tải về
@@ -57,5 +46,5 @@ http.get(fileUrl, (response) => {
   });
 });
 }
-export default {file,downloadFile
+export default {downloadFile,uploadFile
 }

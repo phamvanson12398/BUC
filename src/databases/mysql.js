@@ -107,6 +107,16 @@ export const initTable = async () => {
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
         `;
+        const file = `
+        CREATE TABLE IF NOT EXISTS files (
+            id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255)  NOT NULL,
+            type_file VARCHAR(255) NOT NULL,
+            content TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            version_id INT(11) NOT NULL,
+            FOREIGN KEY (version_id) REFERENCES versions(id)
+        )
+        `;
            
         await connection.query(mail_server);
         await connection.query(mail_sender);
@@ -115,6 +125,7 @@ export const initTable = async () => {
         await connection.query(devices);
         await connection.query(versions);
         await connection.query(refToken);
+        await connection.query(file);
         console.log("Tables created successfully!");
     } catch (error) {
         console.log("Error creating tables:", error);

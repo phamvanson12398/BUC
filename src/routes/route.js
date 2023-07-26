@@ -4,9 +4,9 @@ import permissionController from "../controllers/permissionController";
 import authController from "../controllers/authController";
 import checkAuth from "../Middlewares/checkAuth";
 import checkPermission from "../Middlewares/checkPermission";
-import uploadController from "../controllers/uploadController";
 import deviceController from "../controllers/deviceController";
-
+import uploadController from "../controllers/uploadController";
+import versionController from "../controllers/versionController";
 
 let route = express.Router();
 
@@ -31,7 +31,7 @@ export const initRoute = (app)=>{
     route.put('/device/:id',checkPermission.checkAdmin,deviceController.updateDevice)
 
 
-    route.post('/upfile',uploadController.file)
+    route.post('/upfile',uploadController.uploadFile,versionController.createVersion)
     route.post('/download',uploadController.downloadFile)
 
     route.post('/refreshtk',checkAuth.authToken,authController.refreshToken)

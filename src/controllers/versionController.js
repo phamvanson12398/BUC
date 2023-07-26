@@ -32,30 +32,18 @@ const table = 'versions'
     }
 }
 
- const createDevice = async (req,res)=>{
-    const data ={
-        device_name:req.body.device_name
-    }
-    try {
-        const create = await createData(table,data);
-        const device = await getAll(table);
-        
-        if(create){
-            return res.status(200).json({
-                message:"Create Data Success",
-                data:device[0]
-            });
-        }
-        
-    } catch (error) {
-        return res.status(500).json({
-            message:"Create Data error",
-            
-        });
-    }
+ const createVersion = async (req,res)=>{
+   const data ={
+    
+   }
+        console.log(req.file);
+        return res.status(200).json({
+          message:"success"
+        })
+      
 }
 
- const deleteDevice = async (req,res)=>{
+ const deleteVersion = async (req,res)=>{
     const id = req.params.id;
     try {
          await deleteData(id,table);
@@ -72,7 +60,7 @@ const table = 'versions'
     }
 }
 
- const updateDevice = async (req,res)=>{
+ const updateVersion = async (req,res)=>{
     const id = req.params.id;
     const data ={
         device_name:req.body.device_name,
@@ -93,9 +81,9 @@ const table = 'versions'
     }
 }
 export default {
-    getAlldevice,
-    getOneDevice,
-    createDevice,
-    deleteDevice,
-    updateDevice
+    getAllVersion,
+    getOneVersion,
+    createVersion,
+    deleteVersion,
+    updateVersion
 }
