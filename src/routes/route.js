@@ -26,20 +26,20 @@ export const initRoute = (app)=>{
 
     route.get('/device',checkAuth.checkLogin,deviceController.getAlldevice)
     route.get('/device/:id',checkAuth.checkLogin,deviceController.getOneDevice)
-    route.post('/device/create',checkPermission.checkAdmin,deviceController.createDevice)
+    route.post('/device/create',deviceController.createDevice)
     route.delete('/device/delete/:id',checkPermission.checkAdmin,deviceController.deleteDevice)
     route.put('/device/:id',checkPermission.checkAdmin,deviceController.updateDevice)
 
     route.get('/version',checkAuth.checkLogin,versionController.getAllVersion)
     route.get('/version/:id',checkAuth.checkLogin,versionController.getOneVersion)
-    route.post('/version/create',checkPermission.checkAdmin,versionController.createVersion)
+    route.post('/version/create',versionController.createVersion)
     route.delete('/version/delete/:id',checkPermission.checkAdmin,versionController.deleteVersion)
     route.put('/version/:id',checkPermission.checkAdmin,versionController.updateVersion)
 
 
     route.post('/upfile',uploadController.uploadFile,uploadController.addFile)
     route.get('/file',uploadController.getAllFiles)
-    route.put('/file/:id',uploadController.updateVersion)
+    route.put('/file/:id',uploadController.uploadFile,uploadController.updateFile)
     route.post('/download',uploadController.downloadFile)
 
     route.post('/refreshtk',checkAuth.authToken,authController.refreshToken)
@@ -47,7 +47,7 @@ export const initRoute = (app)=>{
     route.post('/logout',checkAuth.checkLogin,authController.logout)
     route.use('*',(req,res)=>{
         return res.status(404).json({
-            message:"Không tìm thấy địa chỉ"
+            message:"Not found URL"
         })
     })
     return app.use('/',route)

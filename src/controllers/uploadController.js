@@ -2,7 +2,7 @@ import fs from "fs"
 import http from "http"
 import path from "path"
 import multer from "multer"
-import { createData, getAll } from "../models/myLibrary";
+import { createData, getAll, getOne, updateData } from "../models/myLibrary";
 const table= 'files'
 
 let storage = multer.diskStorage({
@@ -16,7 +16,7 @@ let storage = multer.diskStorage({
   }
 });
 let uploadFile = multer({storage: storage,limits: {
-  fileSize: 15000000000
+  fileSize: 14000000000
 },
 fileFilter: async function (req, file, callback) {
   const ext = path.extname(file.originalname);
@@ -38,20 +38,35 @@ const getAllFiles= async (req,res)=>{
       }
       
   } catch (error) {
-      return res.status(500).json({
+      return res.status(400).json({
           message:`Get Data error: ${error} `
       });
   }
   
 }
 
-
+const getOneFile= async (req,res)=>{
+  const id = req.params.id;
+  try {
+    const file = await getOne(id,table);
+    if(file){
+      return res.status(200).json({
+        message:"success",
+        data:file[0]
+      })
+    }
+  } catch (error) {
+    return res.json({
+      message:"eorror"
+    })
+  }
+}
 const addFile = async (req,res)=>{
   const data ={
     name: req.file.filename,
     type_file:req.file.mimetype,
     content :new Date(),
-    path : `http://localhost:3001/file/${req.file.filename}`,
+    path : req.file.path,
     version_id : req.body.version_id
   }
   try {
@@ -64,25 +79,55 @@ const addFile = async (req,res)=>{
       })
     }
   } catch (error) {
-    return res.status(500).json({
+    return res.status(400).json({
       message:` error: ${error} `
     })
   }
-console.log(req.file);
-  return res.status(200).json({
-    
-  })
 }   
  const updateFile = async (req,res)=>{
-  // them thuoc tinh duong dan cua file đe xoa fil khi da update
-  const data ={
-    name: req.file.filename,
-    type_file:req.file.mimetype,
-    content :new Date(),
-    path : `http://localhost:3001/file/${req.file.filename}`,
-    version_id : req.body.version_id
+  const id = req.params.id;
+  const file = await getOne(id,table);
+  console.log(file[0]);
+  if(file){
+    if(req.file){
+      fs.unlink(file[0].path, (err) => {
+        if (err) {
+          console.error('Error deleting file:', err);
+        }
+        console.log('File deleted successfully.');
+      });
+    
+      res.send('File uploaded successfully.');
+      const data ={
+        name: req.file.filename,
+        type_file:req.file.mimetype,
+        content :new Date(),
+        path : req.file.path,
+        version_id : req.body.version_id
+      }
+    }
+    console.log(req.file);
+    }
+    try {
+      const ud =  await updateData(table,id,data);
+      if(ud){
+        const files = await getAll(table);
+        return res.status(201).json({
+          message:"success",
+          data:files[0]
+        })
+      }
+    } catch (error) {
+      return res.status(400).json({
+        message:"error"
+      })
+    }
   }
- }
+    
+  
+  
+  
+ 
 
 
 
@@ -105,5 +150,5 @@ http.get(fileUrl, (response) => {
   });
 });
 }
-export default {downloadFile,uploadFile,addFile,getAllFiles
+export default {downloadFile,uploadFile,addFile,getAllFiles,getOneFile,updateFile
 }

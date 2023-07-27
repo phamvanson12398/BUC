@@ -78,9 +78,8 @@ const table = 'versions'
         }
         
     } catch (error) {
-        return res.status(500).json({
-            message:"Delete Data error",
-           
+        return res.status(500).json({   
+            message:"Delete Data error",  
         });
     }
 }
