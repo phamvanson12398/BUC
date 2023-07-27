@@ -2,7 +2,7 @@ import fs from "fs"
 import http from "http"
 import path from "path"
 import multer from "multer"
-import { createData, getAll, getFileVersion, getOne, updateData } from "../models/myLibrary";
+import { checkFile, createData, getAll, getFileVersion, getOne, updateData } from "../models/myLibrary";
 const table= 'files'
 
 let storage = multer.diskStorage({
@@ -101,15 +101,30 @@ const addFile = async (req,res)=>{
   }
 }   
 
-  
+  export const getfile = async (req, res)=>{
+    {
+      const filename = req.params.filename ;
+      const checkfile = await checkFile(filename);
+      
+      var mimetype = mime.getType(file);
+          const fileUrl = checkfile.path;
+      var file = fs.readFileSync(fileUrl);
+    
+      res.setHeader('Content-disposition', 'attachment; filename=' + checkfile.name);
+      res.setHeader('Content-type', mimetype);
+      res.end();
+    }
+  }
   
  
 
 
 
-const downloadFile = (req,res)=>{
-  
-    const fileUrl = 'home/longbt/Desktop/BUC/BUC/src/storage/1690339554551--NIPS.zip';
+const downloadFile = async (req,res)=>{
+  const filename = req.params.filename ;
+const checkfile = await checkFile(filename);
+
+    const fileUrl = checkfile.path;
     const downloadPath = './1690339554551--NIPS.zip'; // Đường dẫn tới nơi lưu tập tin sau khi tải về
 
 const file = fs.createWriteStream(downloadPath);
@@ -119,6 +134,7 @@ http.get(fileUrl, (response) => {
   file.on('finish', () => {
     file.close(() => {
       console.log('Tập tin đã được tải về thành công.');
+      res.end();
     });
   });
 }).on('error', (err) => {
@@ -127,5 +143,5 @@ http.get(fileUrl, (response) => {
   });
 });
 }
-export default {downloadFile,uploadFile,addFile,getAllFiles,getFilevs,getOneFile
+export default {downloadFile,uploadFile,addFile,getAllFiles,getFilevs,getOneFile,getfile
 }

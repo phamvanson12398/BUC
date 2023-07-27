@@ -87,3 +87,10 @@ export const getFileVersion = async (version_id)=>{
     console.log("error sql");
   }
 }
+
+export const checkFile = async (filename) => {
+  const connection = await getConnection();
+  const file = await connection.query(`select * from files where name = ?`, filename);
+
+  return file[0];
+}

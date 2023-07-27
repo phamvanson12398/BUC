@@ -40,20 +40,8 @@ export const initRoute = (app)=>{
     route.post('/upfile',uploadController.uploadFile,uploadController.addFile)
     route.get('/file',uploadController.getAllFiles)
     route.get('/file/:id',uploadController.getFilevs)
-    route.post('/download',uploadController.downloadFile)
-    app.get('/api/download', (req, res) => {
-        const filename = '1690441758017--ollllld.zip';
-        const filePath = './storage/1690441758017--ollllld.zip'; // Thay đổi đường dẫn tới thư mục chứa các tệp
-      console.log(filePath);
-        // Sử dụng phương thức res.download để gửi lại tệp cho người dùng
-        res.download(filePath, (err) => {
-          if (err) {
-            // Xử lý lỗi nếu không thể tìm thấy hoặc tải xuống tệp
-            console.error('Error while downloading file:', err);
-            res.status(404).json({ error: 'File not found' });
-          }
-        });
-      });
+    route.post('/download/:filename',uploadController.downloadFile)
+    app.get('/download/:filename', uploadController.getfile);
       
     route.post('/refreshtk',checkAuth.authToken,authController.refreshToken)
     route.post('/login',checkAuth.checkForm,authController.login)
