@@ -6,7 +6,7 @@ export const getAll = async (table) => {
     const data = connection.query(`select * from ${table} `);
     return data;
   } catch (error) {
-    console.log(error);
+    console.log("error sql");
   }
 };
 export const getOne = async (id, table) => {
@@ -18,7 +18,7 @@ export const getOne = async (id, table) => {
     );
     return dataOne[0];
   } catch (error) {
-    console.log(error);
+    console.log("error sql");
   }
 };
 // supper admin: làm được tất cả
@@ -31,7 +31,7 @@ export const createData = async (table, data) => {
     let createData = await connection.query(`INSERT INTO ${table} SET ?`, data);
     return createData;
   } catch (error) {
-    console.log(error);
+    console.log("error sql");
   }
 };
 export const updateData = async (table, id, data) => {
@@ -43,7 +43,7 @@ export const updateData = async (table, id, data) => {
     );
     return updateData;
   } catch (error) {
-    console.log(error);
+    console.log("error sql");
   }
 };
 export const checkUser = async (user_name) => {
@@ -61,7 +61,7 @@ export const deleteData = async (id, table) => {
     );
     return deleteOne;
   } catch (error) {
-    console.log(error);
+    console.log("error sql");
   }
 };
 export const deleteToken = async (user_id) => {
@@ -73,5 +73,17 @@ export const deleteToken = async (user_id) => {
     }
   } catch (error) {
     console.log("Chưa thể xóa được token");
+  }
+}
+export const getFileVersion = async (version_id)=>{
+  try {
+    const connection = await getConnection();
+    let dataOne = await connection.query(
+      `select * from files where version_id = ?`,
+      version_id
+    );
+    return dataOne[0];
+  } catch (error) {
+    console.log("error sql");
   }
 }

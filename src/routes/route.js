@@ -7,7 +7,7 @@ import checkPermission from "../Middlewares/checkPermission";
 import deviceController from "../controllers/deviceController";
 import uploadController from "../controllers/uploadController";
 import versionController from "../controllers/versionController";
-
+import path from "path"
 let route = express.Router();
 
 export const initRoute = (app)=>{
@@ -39,9 +39,22 @@ export const initRoute = (app)=>{
 
     route.post('/upfile',uploadController.uploadFile,uploadController.addFile)
     route.get('/file',uploadController.getAllFiles)
-    route.put('/file/:id',uploadController.uploadFile,uploadController.updateFile)
+    route.get('/file/:id',uploadController.getFilevs)
     route.post('/download',uploadController.downloadFile)
-
+    app.get('/api/download', (req, res) => {
+        const filename = '1690441758017--ollllld.zip';
+        const filePath = './storage/1690441758017--ollllld.zip'; // Thay đổi đường dẫn tới thư mục chứa các tệp
+      console.log(filePath);
+        // Sử dụng phương thức res.download để gửi lại tệp cho người dùng
+        res.download(filePath, (err) => {
+          if (err) {
+            // Xử lý lỗi nếu không thể tìm thấy hoặc tải xuống tệp
+            console.error('Error while downloading file:', err);
+            res.status(404).json({ error: 'File not found' });
+          }
+        });
+      });
+      
     route.post('/refreshtk',checkAuth.authToken,authController.refreshToken)
     route.post('/login',checkAuth.checkForm,authController.login)
     route.post('/logout',checkAuth.checkLogin,authController.logout)

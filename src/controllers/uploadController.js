@@ -2,7 +2,7 @@ import fs from "fs"
 import http from "http"
 import path from "path"
 import multer from "multer"
-import { createData, getAll, getOne, updateData } from "../models/myLibrary";
+import { createData, getAll, getFileVersion, getOne, updateData } from "../models/myLibrary";
 const table= 'files'
 
 let storage = multer.diskStorage({
@@ -16,7 +16,7 @@ let storage = multer.diskStorage({
   }
 });
 let uploadFile = multer({storage: storage,limits: {
-  fileSize: 14000000000
+  fileSize: 10 * 1024 * 1024 
 },
 fileFilter: async function (req, file, callback) {
   const ext = path.extname(file.originalname);
@@ -45,19 +45,35 @@ const getAllFiles= async (req,res)=>{
   
 }
 
-const getOneFile= async (req,res)=>{
+const getFilevs= async (req,res)=>{
   const id = req.params.id;
   try {
-    const file = await getOne(id,table);
+    const file = await getFileVersion(id);
     if(file){
       return res.status(200).json({
         message:"success",
-        data:file[0]
+        data:file
       })
     }
   } catch (error) {
     return res.json({
-      message:"eorror"
+      message:"error"
+    })
+  }
+}
+const getOneFile = async (req,res)=>{
+  const filename = req.params.id;
+  try {
+    const file = await getOne(filename,table);
+    if(file){
+      return res.status(200).json({
+        message:"success",
+        data:file
+      })
+    }
+  } catch (error) {
+    return res.json({
+      message:"error"
     })
   }
 }
@@ -84,47 +100,7 @@ const addFile = async (req,res)=>{
     })
   }
 }   
- const updateFile = async (req,res)=>{
-  const id = req.params.id;
-  const file = await getOne(id,table);
-  console.log(file[0]);
-  if(file){
-    if(req.file){
-      fs.unlink(file[0].path, (err) => {
-        if (err) {
-          console.error('Error deleting file:', err);
-        }
-        console.log('File deleted successfully.');
-      });
-    
-      res.send('File uploaded successfully.');
-      const data ={
-        name: req.file.filename,
-        type_file:req.file.mimetype,
-        content :new Date(),
-        path : req.file.path,
-        version_id : req.body.version_id
-      }
-    }
-    console.log(req.file);
-    }
-    try {
-      const ud =  await updateData(table,id,data);
-      if(ud){
-        const files = await getAll(table);
-        return res.status(201).json({
-          message:"success",
-          data:files[0]
-        })
-      }
-    } catch (error) {
-      return res.status(400).json({
-        message:"error"
-      })
-    }
-  }
-    
-  
+
   
   
  
@@ -132,8 +108,9 @@ const addFile = async (req,res)=>{
 
 
 const downloadFile = (req,res)=>{
-    const fileUrl = '/home/longbt/Desktop/BUC/BUC/src/storage/1690339554551--NIPS.zip';
-    const downloadPath = './file-to-download.txt'; // Đường dẫn tới nơi lưu tập tin sau khi tải về
+  
+    const fileUrl = 'home/longbt/Desktop/BUC/BUC/src/storage/1690339554551--NIPS.zip';
+    const downloadPath = './1690339554551--NIPS.zip'; // Đường dẫn tới nơi lưu tập tin sau khi tải về
 
 const file = fs.createWriteStream(downloadPath);
 
@@ -150,5 +127,5 @@ http.get(fileUrl, (response) => {
   });
 });
 }
-export default {downloadFile,uploadFile,addFile,getAllFiles,getOneFile,updateFile
+export default {downloadFile,uploadFile,addFile,getAllFiles,getFilevs,getOneFile
 }
