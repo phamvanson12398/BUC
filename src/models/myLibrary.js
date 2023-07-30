@@ -1,96 +1,128 @@
+import { error } from "ajv/dist/vocabularies/applicator/dependencies";
 import { getConnection } from "../databases/mysql";
 
 export const getAll = async (table) => {
-  try {
-    const connection = await getConnection();
-    const data = connection.query(`select * from ${table} `);
-    return data;
-  } catch (error) {
-    console.log("error sql");
+
+  const connection = await getConnection();
+  const data = await connection.query(`select * from ${table} `);
+  if (data[0].length === 0) {
+    throw new Error("Dữ liệu không tồn tại!")
   }
+  return data[0];
+
+
+
 };
 export const getOne = async (id, table) => {
-  try {
-    const connection = await getConnection();
-    let dataOne = await connection.query(
-      `select * from ${table} where id = ?`,
-      id
-    );
-    return dataOne[0];
-  } catch (error) {
-    console.log("error sql");
+  const connection = await getConnection();
+  let dataOne = await connection.query(
+    `select * from ${table} where id = ?`,
+    id
+  );
+  if (dataOne[0].length === 0) {
+    throw new Error("Dữ liệu không tồn tại !")
   }
+  return dataOne[0];
 };
-// supper admin: làm được tất cả
-// admin : làm đc tất cả chỉ không được xóa admin đi,tai len phien ban 
-// user: tải phiển
 
 export const createData = async (table, data) => {
-  try {
-    const connection = await getConnection();
-    let createData = await connection.query(`INSERT INTO ${table} SET ?`, data);
-    return createData;
-  } catch (error) {
-    console.log("error sql");
+
+  const connection = await getConnection();
+  let createData = await connection.query(`INSERT INTO ${table} SET ?`, data);
+  if (!createData) {
+    throw new Error("Đã xảy ra lỗi : ", error.message)
   }
+  return createData;
+
 };
 export const updateData = async (table, id, data) => {
-  try {
-    const connection = await getConnection();
-    let updateData = await connection.query(
-      `UPDATE ${table} SET ? WHERE id = ?`,
-      [data, id]
-    );
-    return updateData;
-  } catch (error) {
-    console.log("error sql");
+
+  const connection = await getConnection();
+  let updateData = await connection.query(
+    `UPDATE ${table} SET ? WHERE id = ?`,
+    [data, id]
+  );
+  if (!updateData) {
+    throw new Error("Đã xảy ra lỗi : ", error.message)
   }
+  return updateData;
+
+
 };
 export const checkUser = async (user_name) => {
   const connection = await getConnection();
   const userName = await connection.query(`select * from users where user_name = ?`, user_name);
-
+  // console.log(userName[0].length);
+  if (userName[0].length === 0) {
+    throw new Error("Đã xảy ra lỗi : không tìm thấy user ")
+  }
   return userName[0];
 }
 export const deleteData = async (id, table) => {
-  try {
-    const connection = await getConnection();
-    let deleteOne = await connection.query(
-      `delete  from ${table} where id = ?`,
-      id
-    );
-    return deleteOne;
-  } catch (error) {
-    console.log("error sql");
+
+  const connection = await getConnection();
+  let deleteOne = await connection.query(
+    `delete  from ${table} where id = ?`,
+    id)
+  console.log(deleteOne);
+  if (!deleteOne) {
+    throw new Error("Đã xảy ra lỗi : ", error.message)
   }
 };
 export const deleteToken = async (user_id) => {
   const connection = await getConnection();
-  try {
-    const dlToken = await connection.query(`delete from refTokens where user_id = ? `, user_id);
-    if (dlToken) {
-      return dlToken
-    }
-  } catch (error) {
-    console.log("Chưa thể xóa được token");
+  const dlToken = await connection.query(`delete from refTokens where user_id = ? `, user_id);
+  if (!dlToken) {
+    throw new Error("Chưa thể xóa được token!")
   }
+
 }
-export const getFileVersion = async (version_id)=>{
-  try {
-    const connection = await getConnection();
-    let dataOne = await connection.query(
-      `select * from files where version_id = ?`,
-      version_id
-    );
-    return dataOne[0];
-  } catch (error) {
-    console.log("error sql");
+export const getFileVersion = async (version_id) => {
+
+  const connection = await getConnection();
+  let dataOne = await connection.query(
+    `select * from files where version_id = ?`,
+    version_id
+  );
+  if (!dataOne) {
+    throw new Error("Đã xảy ra lỗi : ", error.message)
   }
+  return dataOne[0];
+
 }
 
 export const checkFile = async (filename) => {
   const connection = await getConnection();
   const file = await connection.query(`select * from files where name = ?`, filename);
-
+  
+  if (!file) {
+    throw new Error("Đã xảy ra lỗi : ", error.message)
+  }
   return file[0];
+}
+export const checkToken = async (name) => {
+  const connection = await getConnection();
+  let token = await connection.query(
+    `select * from blacklist where name = ?`,
+    name
+  );
+  if (token[0].length !== 0) {
+    throw new Error("Token không còn giá trị sử dụng !")
+  }
+  return token;
+};
+export const deleteVersion = async (device_id) => {
+  const connection = await getConnection();
+  const dlVersion = await connection.query(`delete from versions where device_id = ? `, device_id);
+  if (!dlVersion) {
+    throw new Error("lỗi chưa xóa được version")
+  }
+
+}
+export const deleteFile = async (version_id)=>{
+  const connection = await getConnection();
+  const dlFile = await connection.query(`delete from files where version_id = ? `, version_id);
+  if (!dlFile) {
+    throw new Error("lỗi chưa xóa được file")
+  }
 }

@@ -1,19 +1,17 @@
 
 import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
 import { createData, deleteData, getAll, getOne, updateData } from "../models/myLibrary"
-import { error } from "ajv/dist/vocabularies/applicator/dependencies";
 const table = "users";
 export const getUser = async (req, res) => {
     try {
         const User = await getAll(table);
         return res.status(200).json({
             message: "Get Data Success",
-            data: User[0]
+            data: User
         });
     } catch (error) {
-        return res.status(500).json({
-            message: "Get Data error",
+        return res.status(400).json({
+            message: `Error : ${error.message}`,
         })
     }
 }
@@ -26,8 +24,8 @@ const getOneUser = async (req, res) => {
             data: User
         })
     } catch (error) {
-        return res.status(500).json({
-            message: "Get Data error",
+        return res.status(400).json({
+            message: `Error : ${error.message}`
 
         })
     }
@@ -50,23 +48,20 @@ export const createUser = async (req, res) => {
         permission_id: req.body.permission_id
     }
     try {
-        
-        const create = await createData(table, data);
-        let User = await getAll('users');
+
+        await createData(table, data);
+        let User = await getAll(table);
         for (let i = 0; i < User[0].length; i++) {
             delete User[0][i].password;
-          }
-        if (create) {
-           
-            return res.status(201).json({
-                message: "Created User success",
-                data: User[0]
-            })
         }
+        return res.status(201).json({
+            message: "Created User success",
+            data: User
+        })
 
     } catch (error) {
         return res.status(400).json({
-            message: "Created User error"
+            message: `Error : ${error.message}`
         })
     }
 
@@ -81,8 +76,8 @@ const deleteUser = async (req, res) => {
             data: user[0]
         })
     } catch (error) {
-        return res.status(500).json({
-            message: "Delete error"
+        return res.status(400).json({
+            message: `Error : ${error.message}`
         })
     }
 }
@@ -102,11 +97,11 @@ const updateUser = async (req, res) => {
         const user = await getAll(table);
         return res.status(200).json({
             message: "Update Data Success",
-            data: user[0]
+            data: user
         })
     } catch (error) {
         return res.status(200).json({
-            message: "Update Data error",
+            message: `Error : ${error.message}`
 
         })
     }

@@ -58,9 +58,10 @@ export const initTable = async () => {
         const mail_sender = `
             CREATE TABLE IF NOT EXISTS mail_sender (
                 id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                name VARCHAR(255) NOT NULL,
+                email VARCHAR(255) NOT NULL,
+                password VARCHAR(255) NOT NULL,
                 server_id INT(11) NOT NULL,
-                FOREIGN KEY (server_id) REFERENCES mail_server(id)
+                FOREIGN KEY (server_id) REFERENCES mail_server(id) ON DELETE CASCADE
             )`;
 
         const permissions = `
@@ -78,7 +79,7 @@ export const initTable = async () => {
                 email VARCHAR(255) NOT NULL unique,
                 phone INT(10) NOT NULL,
                 permission_id INT(11) NOT NULL,
-                FOREIGN KEY (permission_id) REFERENCES permissions(id)
+                FOREIGN KEY (permission_id) REFERENCES permissions(id) ON DELETE CASCADE
             )`;
         const devices =`
             CREATE TABLE IF NOT EXISTS devices (
@@ -95,7 +96,7 @@ export const initTable = async () => {
                 total_size INT(11) NOT NULL,
                 description VARCHAR(255) NOT NULL,
                 device_id INT(11) NOT NULL ,
-                FOREIGN KEY (device_id) REFERENCES devices(id)
+                FOREIGN KEY (device_id) REFERENCES devices(id) ON DELETE CASCADE
             )`;
         
         const refToken = `
@@ -103,7 +104,7 @@ export const initTable = async () => {
             id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
             token VARCHAR(255)  NOT NULL,
             user_id INT(11) NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
         `;
@@ -115,10 +116,15 @@ export const initTable = async () => {
             content TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             path VARCHAR(255) NOT NULL,
             version_id INT(11) NOT NULL,
-            FOREIGN KEY (version_id) REFERENCES versions(id)
+            FOREIGN KEY (version_id) REFERENCES versions(id) ON DELETE CASCADE
         )
         `;
-           
+        const blackList =`
+        CREATE TABLE IF NOT EXISTS blacklist (
+            id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255)  NOT NULL
+        )
+        ` 
         await connection.query(mail_server);
         await connection.query(mail_sender);
         await connection.query(permissions);
@@ -127,6 +133,8 @@ export const initTable = async () => {
         await connection.query(versions);
         await connection.query(refToken);
         await connection.query(file);
+        await connection.query(blackList);
+
         console.log("Tables created successfully!");
     } catch (error) {
         console.log("Error creating tables:", error);

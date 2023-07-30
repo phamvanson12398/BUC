@@ -4,22 +4,21 @@ import bcrypt from "bcrypt"
 import { checkUser, createData, deleteToken } from "../models/myLibrary"
 
 
-const generateAccessToken = (id,user_name, permission_id) => {
+const generateAccessToken = (id, permission_id) => {
     const token = jwt.sign({
-        id:id,
-        user_name: user_name,
+        id: id,
         permission_id: permission_id
-    }, process.env.SECRECT_ACCESS_TOKEN, { expiresIn: process.env.TIME_ACCESS_TOKEN})
+    }, process.env.SECRECT_ACCESS_TOKEN, { expiresIn: process.env.TIME_ACCESS_TOKEN })
     // console.log(token);
     return token;
 }
-const generateRefreshToken = (user_name) => {
-    const token = jwt.sign({user_name:user_name}, process.env.SECRECT_REFRESH_TOKEN)
+const generateRefreshToken = (id) => {
+    const token = jwt.sign({ id: id }, process.env.SECRECT_REFRESH_TOKEN)
     return token;
 }
 
 const refreshToken = (req, res) => {
-    const access_token = generateAccessToken(req.user.id,req.user.user_name,req.user.permission_id)
+    const access_token = generateAccessToken(req.user.id, req.user.permission_id)
     return res.status(200).json({
         message: "success",
         accessToken: access_token
@@ -35,17 +34,16 @@ const login = async (req, res) => {
         if (user[0].password) {
             let comparePassword = await bcrypt.compare(password, user[0].password)
             if (comparePassword) {
-                const Access_token = generateAccessToken(user[0].id,user[0].user_name, user[0].permission_id);
-                // console.log(Access_token);
-                const Refresh_token = generateRefreshToken(user[0].user_name);
+                const Access_token = generateAccessToken(user[0].id, user[0].permission_id);
+                const Refresh_token = generateRefreshToken(user[0].id);
                 const reftoken = await createData('refTokens', { token: Refresh_token, user_id: user[0].id })
                 const data = {
-                    user_name:user[0].user_name,
-                    email:user[0].email,
-                    phone:user[0].phone,
-                    permission_id : user[0].permission_id,
-                    accessToken:Access_token,
-                    reftoken:Refresh_token
+                    user_name: user[0].user_name,
+                    email: user[0].email,
+                    phone: user[0].phone,
+                    permission_id: user[0].permission_id,
+                    accessToken: Access_token,
+                    reftoken: Refresh_token
                 }
                 if (reftoken) {
                     return res.status(200).json({
@@ -58,37 +56,34 @@ const login = async (req, res) => {
                     message: "Password does not exist "
                 })
             }
+
         }
 
     } catch (error) {
 
         return res.status(400).json({
-            message: "Email does not exist "
+            message: error.message
         })
 
 
     }
 
 }
-const logout = async (req,res)=>{
-  const user_id = req.user_id;
-  
+const logout = async (req, res) => {
+    const user_id = req.user_id;
     try {
-        
-        const dlToken = await deleteToken(user_id);
-        if(dlToken){
-            return res.status(300).json({
-                message:"Logout Success"
-            })
-        }
+        await deleteToken(user_id);
+        await createData('blacklist', { name: req.token })
+        return res.status(300).json({
+            message: "Logout Success"
+        })
     } catch (error) {
-       
-        return res.status(500).json({
-            
-            message:"Logout not success"
+
+        return res.status(400).json({
+            message: error.message
         })
     }
 }
 export default {
-    refreshToken, login,logout
+    refreshToken, login, logout
 }

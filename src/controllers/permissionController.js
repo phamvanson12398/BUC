@@ -1,95 +1,91 @@
 import { createData, deleteData, getAll, getOne, updateData } from "../models/myLibrary"
 const table = 'permissions'
- const getAllPromise= async (req,res)=>{
+const getAllPromise = async (req, res) => {
     try {
         const permissions = await getAll(table);
         return res.status(200).json({
-            message:"Get Data Success",
-            data:permissions[0]
+            message: "Get Data Success",
+            data: permissions
         });
     } catch (error) {
-        return res.status(500).json({
-            message:"Get Data error",
-            err:error
+        return res.status(400).json({
+            message: `Error : ${error.message}`
         });
     }
-    
+
 }
 
- const getOnePermisson = async (req,res)=>{
-    const id= req.params.id;
+const getOnePermisson = async (req, res) => {
+    const id = req.params.id;
     try {
-        const data = await getOne(id,table);
+        const data = await getOne(id, table);
         return res.status(200).json({
-            message:"Get Data Success",
-            data:data
+            message: "Get Data Success",
+            data: data
         });
     } catch (error) {
-        return res.status(500).json({
-            message:"Get Data error",
-            err:error
+        return res.status(400).json({
+            message: `Error : ${error.message}`
         });
     }
 }
 
- const createPermission = async (req,res)=>{
-    const data ={
-        name:req.body.name,
-        description : req.body.description
+const createPermission = async (req, res) => {
+    const data = {
+        name: req.body.name,
+        description: req.body.description
     }
     try {
-        const create = await createData(table,data);
+        await createData(table, data);
         const permissions = await getAll(table);
+
         
-        if(create){
             return res.status(200).json({
-                message:"Create Data Success",
-                data:permissions[0]
+                message: "Create Data Success",
+                data: permissions
             });
-        }
         
+
     } catch (error) {
-        return res.status(500).json({
-            message:"Create Data error",
-            
+        return res.status(400).json({
+            message: `Error : ${error.message}`
         });
     }
 }
 
- const deletePermission = async (req,res)=>{
+const deletePermission = async (req, res) => {
     const id = req.params.id;
     try {
-         await deleteData(id,table);
+        await deleteData(id, table);
         const permissions = await getAll(table);
         return res.status(200).json({
-            message:"Delete Data Success",
-            data:permissions[0]
+            message: "Delete Data Success",
+            data: permissions
         });
     } catch (error) {
-        return res.status(500).json({
-            message:"Delete Data error",
-            err:error
+        return res.status(400).json({
+            message: `Error : ${error.message}`
         });
     }
 }
 
- const updatePermission = async (req,res)=>{
+const updatePermission = async (req, res) => {
     const id = req.params.id;
-    const data ={
-        name:req.body.name,
-        description : req.body.description
+    const data = {
+        name: req.body.name,
+        description: req.body.description
     }
     try {
-        updateData(table,id,data);
+        await updateData(table, id, data);
         const permissions = await getAll(table);
+        
         return res.status(200).json({
-            message:"Delete Data Success",
-            data:permissions[0]
+            message: "Update Data Success",
+            data: permissions
         });
     } catch (error) {
-        return res.status(500).json({
-            message:"Update Data error",
-            err:error
+        return res.status(400).json({
+            message: `Error : ${error}`
         });
     }
 }
