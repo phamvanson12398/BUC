@@ -18,6 +18,7 @@ const authToken = (req, res, next) => {
             })
         }
         else {
+            console.log(decode);
             const user = await getOne(decode.id, 'users')
             req.user = user[0];
 
@@ -31,16 +32,14 @@ const checkLogin = async (req, res, next) => {
     
    try {
    
-    if(!bearToken){
-        throw new Error("Bạn chưa đăng nhập!")
-    }
-    const token = bearToken.split(" ")[1]
-    await checkToken(token);
     if (!bearToken || !bearToken.startsWith('Bearer')) {
         return res.status(401).json({
             message: "You are not logged in"
         })
     }
+    const token = bearToken.split(" ")[1]
+    await checkToken(token);
+    
     
     jwt.verify(token, process.env.SECRECT_ACCESS_TOKEN, (err, decode) => {
         if (err) {
@@ -81,6 +80,7 @@ const checkForm = (req, res, next) => {
 
     const validate = Ajv.compile(authSchema);
     const check = validate(data)
+    console.log(check);
     if (!check) {
         return res.status(400).json({
             message: "Enter the correct user and the character must be longer than 8"

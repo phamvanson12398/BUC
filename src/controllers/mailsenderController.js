@@ -4,14 +4,14 @@ import { createData, deleteData, getAll, getOne, updateData } from "../models/my
 
 const table = 'mail_sender';
 const sendMail = async (req, res) => {
-    const { email, pass } = req.body;
+    const { email, password } = req.body;
     const transporter = nodemailer.createTransport({
         service: "Gmail",
         port: 25,
         auth: {
             user: email,
             //aibtwhbjxbowaoax
-            pass: pass
+            pass: password
         }
     });
 

@@ -1,34 +1,8 @@
 import fs from "fs"
 import stream from "stream";
-import path from "path"
-import multer from "multer"
 import { checkFile, createData, deleteData, getAll, getFileVersion, getOne } from "../models/myLibrary";
 const table = 'files'
 
-let storage = multer.diskStorage({
-
-  destination: (req, file, callback) => {
-    callback(null, path.join(`${__dirname}/../storage`));
-  },
-  filename: (req, file, callback) => {
-    let filename = `${Date.now()}--${file.originalname}`;
-    callback(null, filename);
-  }
-});
-let uploadFile = multer({
-  storage: storage, limits: {
-    //10mb
-    fileSize: 10 * 1024 * 1024
-  },
-  fileFilter: async function (req, file, callback) {
-    const ext = path.extname(file.originalname);
-    if (ext !== '.zip') {
-
-      return callback(req.err = 'Only zip are allowed');
-    }
-    callback(null, true);
-  },
-}).single("filename");
 
 const getAllFiles = async (req, res) => {
   try {
@@ -144,5 +118,5 @@ const deleteFile = async (req, res) => {
   }
 }
 export default {
-  uploadFile, addFile, getAllFiles, getFilevs, getOneFile, downloadFile, deleteFile
+   addFile, getAllFiles, getFilevs, getOneFile, downloadFile, deleteFile
 }

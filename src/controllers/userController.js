@@ -52,7 +52,7 @@ export const createUser = async (req, res) => {
         await createData(table, data);
         let User = await getAll(table);
         for (let i = 0; i < User[0].length; i++) {
-            delete User[0][i].password;
+            delete User[i].password;
         }
         return res.status(201).json({
             message: "Created User success",
