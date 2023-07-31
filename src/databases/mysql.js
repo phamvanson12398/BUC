@@ -46,17 +46,16 @@ export const initDataMysql = async () => {
   };
 export const initTable = async () => {
     try {
-        const connection = await getConnection(); 
-
+       
         const mail_server = `
-            CREATE TABLE IF NOT EXISTS mail_server (
+            CREATE TABLE IF NOT EXISTS mail_server(
                 id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
                 server_name VARCHAR(255) NOT NULL,
                 description VARCHAR(255) NOT NULL
             )`;
 
         const mail_sender = `
-            CREATE TABLE IF NOT EXISTS mail_sender (
+            CREATE TABLE IF NOT EXISTS mail_sender(
                 id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
                 email VARCHAR(255) NOT NULL,
                 password VARCHAR(255) NOT NULL,

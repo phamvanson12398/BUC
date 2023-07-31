@@ -11,7 +11,7 @@ const getServer = async (req, res) => {
         })
     } catch (error) {
         return res.status(400).json({
-            messsage: `error:${error.messsage}`
+            messsage: `${error}`
         })
     }
 }
@@ -25,14 +25,14 @@ const getOneServer = async (req, res) => {
         })
     } catch (error) {
         return res.status(400).json({
-            messsage: `error:${error.messsage}`
+            messsage: `${error}`
         })
     }
 }
 const createMailServer = async (req, res) => {
     const data = {
-        name: req.name,
-        description: req.description
+        server_name: req.body.server_name,
+        description: req.body.description
     }
     try {
         await createData(table, data);
@@ -43,15 +43,15 @@ const createMailServer = async (req, res) => {
         })
     } catch (error) {
         return res.status(200).json({
-            messsage: `error:${error.messsage}`
+            messsage: `${error}`
         })
     }
 }
 const updateServer = async (req, res) => {
     const id = req.params.id;
     const data = {
-        name: req.name,
-        description: req.description
+        server_name: req.body.server_name,
+        description: req.body.description
     }
     try {
         await updateData(table, id, data)
@@ -62,7 +62,7 @@ const updateServer = async (req, res) => {
         })
     } catch (error) {
         return res.status(200).json({
-            messsage: `error:${error.messsage}`
+            messsage: `${error}`
         })
     }
 }
@@ -77,7 +77,7 @@ const deleteServer = async (req, res) => {
         })
     } catch (error) {
         return res.status(200).json({
-            messsage: `error:${error.messsage}`
+            messsage: `${error}`
         })
     }
 }

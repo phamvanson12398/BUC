@@ -6,7 +6,7 @@ const route = express.Router();
 
 export const mailRoute = (app)=>{
     route
-        .post('/sendmail',checkAuth.checkLogin,mailsenderController.sendMail)
+        .post('/sendmail/:id',checkAuth.checkLogin,mailsenderController.sendMail)
         .get('/', checkAuth.checkLogin, mailsenderController.getSender)
         .get('/:id', checkAuth.checkLogin, mailsenderController.getOneSender)
         .post('/create', checkPermission.checkAdmin, mailsenderController.createMailsender)

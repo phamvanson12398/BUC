@@ -10,8 +10,6 @@ export const getAll = async (table) => {
   }
   return data[0];
 
-
-
 };
 export const getOne = async (id, table) => {
   const connection = await getConnection();

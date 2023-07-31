@@ -1,17 +1,19 @@
-
+import ajv from "ajv"
 import nodemailer from "nodemailer"
 import { createData, deleteData, getAll, getOne, updateData } from "../models/myLibrary";
 
 const table = 'mail_sender';
 const sendMail = async (req, res) => {
-    const { email, password } = req.body;
+    const id = req.params.id;
+   try {
+    const sender = await getOne(id,table)
     const transporter = nodemailer.createTransport({
         service: "Gmail",
         port: 25,
         auth: {
-            user: email,
+            user: sender[0].email,
             //aibtwhbjxbowaoax
-            pass: password
+            pass: sender[0].password
         }
     });
 
@@ -34,6 +36,11 @@ const sendMail = async (req, res) => {
             });
         }
     })
+   } catch (error) {
+    return res.status(400).json({
+        message:`${error}`
+    })
+   }
 }
 
 const getSender = async (req, res) => {
@@ -45,7 +52,7 @@ const getSender = async (req, res) => {
         })
     } catch (error) {
         return res.status(400).json({
-            messsage:`error:${error.messsage}`
+            messsage:`${error}`
         })
     }
 }
@@ -59,15 +66,40 @@ const getOneSender = async (req,res)=>{
         })
     } catch (error) {
         return res.status(400).json({
-            messsage:`error:${error.messsage}`
+            messsage:`${error}`
         })
     }
 }
 const createMailsender = async (req, res) => {
+    const Ajv = new ajv();
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    Ajv.addFormat('email', emailRegex)
+    const authSchema = {
+        type: "object",
+        properties: {
+            email: {
+                type: "string",
+                format:'email'
+            },
+        },
+        required: ["email"]
+    };
+    
+
+    const validate = Ajv.compile(authSchema);
+   
+    
+    
     const data = {
-        email: req.email,
-        password: req.password,
-        server_id: req.server_id
+        email: req.body.email,
+        password: req.body.password,
+        server_id: req.body.server_id
+    }
+    const check = validate(data)
+    if (!check) {
+        return res.status(400).json({
+            message: `${validate.errors[0].message}`
+        })
     }
     try {
         await createData(table, data);
@@ -78,17 +110,38 @@ const createMailsender = async (req, res) => {
         })
     } catch (error) {
         return res.status(200).json({
-            messsage: `error:${error.messsage}`
+            messsage: `${error}`
         })
     }
 }
 const updateSender = async (req,res)=>{
-    const id = req.params.id;
+    const Ajv = new ajv();
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    Ajv.addFormat('email', emailRegex)
+    const authSchema = {
+        type: "object",
+        properties: {
+            email: {
+                type: "string",
+                format:'email'
+            },
+        },
+        required: ["email"]
+    };
+    
+    const validate = Ajv.compile(authSchema);
     const data = {
-        email: req.email,
-        password: req.password,
-        server_id: req.server_id
+        email: req.body.email,
+        password: req.body.password,
+        server_id: req.body.server_id
     }
+    const check = validate(data)
+    if (!check) {
+        return res.status(400).json({
+            message: `${validate.errors[0].message}`
+        })
+    }
+    const id = req.params.id;
     try {
         await updateData(table,id,data)
         const dataAll = await getAll(table);
@@ -98,7 +151,7 @@ const updateSender = async (req,res)=>{
         })
     } catch (error) {
         return res.status(200).json({
-            messsage: `error:${error.messsage}`
+            messsage: `${error}`
         })
     }
 }
@@ -113,7 +166,7 @@ const deleteSender = async (req,res)=>{
         })
     } catch (error) {
         return res.status(200).json({
-            messsage: `error:${error.messsage}`
+            messsage: `${error}`
         })
     }
 }

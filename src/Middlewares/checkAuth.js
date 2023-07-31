@@ -63,7 +63,6 @@ const checkForm = (req, res, next) => {
     const authSchema = {
         type: "object",
         properties: {
-
             user_name: {
                 type: "string",
             },
@@ -80,10 +79,9 @@ const checkForm = (req, res, next) => {
 
     const validate = Ajv.compile(authSchema);
     const check = validate(data)
-    console.log(check);
     if (!check) {
         return res.status(400).json({
-            message: "Enter the correct user and the character must be longer than 8"
+            message: `${validate.errors[0].message}`
         })
     } else {
         next()
