@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import ajv from "ajv";
-import { checkToken, getOne, getOneToken } from "../models/myLibrary";
+import { checkToken, deleteToken, getOne, getOneToken } from "../models/myLibrary";
 
 const authToken = (req, res, next) => {
   const tokenBearer = req.header("Authorization");
@@ -38,36 +38,34 @@ const checkLogin = async (req, res, next) => {
     const token = bearToken.split(" ")[1];
     await checkToken(token);
 
-    jwt.verify(token, process.env.SECRECT_ACCESS_TOKEN, async (err, decode) => {
+    await jwt.verify(token, process.env.SECRECT_ACCESS_TOKEN,  (err, decode) => {
       if (err) {
-        console.log(err);
         return res.status(401).json({ message: "Invalid access token" });
       } else {
         req.user_id = decode.id;
-        const expToken = await getOneToken(decode.id);
-
-        if (expToken) {
-          jwt.verify(
-            expToken[0].token,
-            process.env.SECRECT_REFRESH_TOKEN,
-            (err, decode) => {
+      }
+    });
+    const expToken = await getOneToken(req.user_id);
+    console.log(expToken);
+        if (expToken.length !==0 ) {
+         await jwt.verify(expToken[0].token,process.env.SECRECT_REFRESH_TOKEN, async(err, decode) => {
               if (err) {
+                await deleteToken(req.user_id)
                 return res.status(400).json({
                   message: `yeu cau dang nhap lai`,
                 });
               } else {
-                  // chuyển token đến phiên đăng xuất đê lưu vào black list
-                  req.token = token;
-                  next();
-                
+                // chuyển token đến phiên đăng xuất đê lưu vào black list
+                req.token = token;
+                next();
               }
             }
           );
-        }
-
-        // next()
+        }else{
+          return res.status(400).json({
+              message: "Bạn chưa đăng nhập!"
+          })
       }
-    });
   } catch (error) {
     return res.status(400).json({
       message: error.message,

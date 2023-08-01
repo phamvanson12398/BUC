@@ -50,7 +50,6 @@ export const updateData = async (table, id, data) => {
 export const checkUser = async (user_name) => {
   const connection = await getConnection();
   const userName = await connection.query(`select * from users where user_name = ?`, user_name);
-  // console.log(userName[0].length);
   if (userName[0].length === 0) {
     throw new Error("Đã xảy ra lỗi : không tìm thấy user ")
   }
@@ -62,7 +61,6 @@ export const deleteData = async (id, table) => {
   let deleteOne = await connection.query(
     `delete  from ${table} where id = ?`,
     id)
-  console.log(deleteOne);
   if (!deleteOne) {
     throw new Error("Đã xảy ra lỗi : ", error.message)
   }
@@ -115,7 +113,6 @@ export const checkToken = async (name) => {
   if (token[0].length !== 0) {
     throw new Error("Token không còn giá trị sử dụng !")
   }
-  return token;
 };
 export const deleteVersion = async (device_id) => {
   const connection = await getConnection();
