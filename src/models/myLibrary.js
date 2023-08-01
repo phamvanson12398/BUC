@@ -75,6 +75,14 @@ export const deleteToken = async (user_id) => {
   }
 
 }
+export const getOneToken = async (user_id) => {
+  const connection = await getConnection();
+  const dlToken = await connection.query(`select * from refTokens where user_id = ? `, user_id);
+  if (!dlToken) {
+    throw new Error("Chưa thể xóa được token!")
+  }
+  return dlToken[0];
+}
 export const getFileVersion = async (version_id) => {
 
   const connection = await getConnection();

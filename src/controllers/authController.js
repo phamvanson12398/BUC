@@ -13,7 +13,7 @@ const generateAccessToken = (id, permission_id) => {
     return token;
 }
 const generateRefreshToken = (id) => {
-    const token = jwt.sign({ id: id }, process.env.SECRECT_REFRESH_TOKEN)
+    const token = jwt.sign({ id: id }, process.env.SECRECT_REFRESH_TOKEN,{expiresIn : process.env.TIME_REFRESH_TOKEN})
     return token;
 }
 

@@ -11,6 +11,7 @@ export const fileRoute = (app) => {
         .get('/',checkAuth.checkLogin, uploadController.getAllFiles)
         .get('/:id',checkAuth.checkLogin, uploadController.getFilevs)
         .post('/download/:filename',checkAuth.checkLogin, uploadController.downloadFile)
+        .delete('/:id',checkPermission.checkAdmin ,uploadController.deleteFile)
     return app.use('/file', route)
 }
 
