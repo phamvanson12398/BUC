@@ -67,7 +67,7 @@ export const deleteData = async (id, table) => {
 };
 export const deleteToken = async (user_id) => {
   const connection = await getConnection();
-  const dlToken = await connection.query(`delete from refTokens where user_id = ? `, user_id);
+  const dlToken = await connection.query(`delete from whiteLists where user_id = ? `, user_id);
   if (!dlToken) {
     throw new Error("Chưa thể xóa được token!")
   }
@@ -75,7 +75,7 @@ export const deleteToken = async (user_id) => {
 }
 export const getOneToken = async (user_id) => {
   const connection = await getConnection();
-  const dlToken = await connection.query(`select * from refTokens where user_id = ? `, user_id);
+  const dlToken = await connection.query(`select * from whiteLists where user_id = ? `, user_id);
   if (!dlToken) {
     throw new Error("Chưa thể xóa được token!")
   }
@@ -127,5 +127,21 @@ export const deleteFile = async (version_id)=>{
   const dlFile = await connection.query(`delete from files where version_id = ? `, version_id);
   if (!dlFile) {
     throw new Error("lỗi chưa xóa được file")
+  }
+}
+export const deleteOneToken = async (create_at)=>{
+  const connection = await getConnection();
+  const dlToken = await connection.query(`delete from whiteLists where created_at = ? `, create_at);
+  if (!dlToken) {
+    throw new Error("Chưa thể xóa được token!")
+  }
+}
+
+
+export const checkAccess = async (accesstoken)=>{
+  const connection = await getConnection();
+  const dlToken = await connection.query(`select * from whiteLists where acctoken = ? `, accesstoken);
+  if (dlToken[0].length === 0 ) {
+    throw new Error("ban da bi out ra!")
   }
 }

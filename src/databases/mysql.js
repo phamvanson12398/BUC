@@ -98,15 +98,17 @@ export const initTable = async () => {
                 FOREIGN KEY (device_id) REFERENCES devices(id) ON DELETE CASCADE
             )`;
         
-        const refToken = `
-        CREATE TABLE IF NOT EXISTS refTokens (
+        const whiteList = `
+        CREATE TABLE IF NOT EXISTS whiteLists (
             id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            token VARCHAR(255)  NOT NULL,
+            reftoken VARCHAR(255)  NOT NULL,
+            acctoken VARCHAR(255)  NOT NULL,
             user_id INT(11) NOT NULL,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
         `;
+        
         const file = `
         CREATE TABLE IF NOT EXISTS files (
             id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -130,7 +132,7 @@ export const initTable = async () => {
         await connection.query(users);
         await connection.query(devices);
         await connection.query(versions);
-        await connection.query(refToken);
+        await connection.query(whiteList);
         await connection.query(file);
         await connection.query(blackList);
 
