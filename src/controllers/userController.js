@@ -205,5 +205,5 @@ const updateUser = async (req, res) => {
     }
 }
 export default {
-    createUser, getUser, getOneUser, deleteUser, updateUser
+    createUser, getUser, getOneUser, deleteUser, updateUser,hashPassword
 }

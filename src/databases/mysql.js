@@ -1,6 +1,8 @@
 import mysql from "mysql2/promise";
 import dotenv from "dotenv/config";
-
+import bcrypt from "bcrypt"
+import userController from "../controllers/userController";
+import { checkUser, checkinitUser } from "../models/myLibrary";
 let connection;
 export const createConnect = async () => {
     if (!connection) {
@@ -126,6 +128,11 @@ export const initTable = async () => {
             name VARCHAR(255)  NOT NULL
         )
         ` 
+        const pass =  await  userController.hashPassword(process.env.PASS)
+        const initPermission = `INSERT INTO permissions (name,description) VALUES('supperhhadmin','lamhhh het')`;
+        const initAccount = `
+        INSERT INTO users (user_name,password,email,phone,permission_id) VALUES ('${process.env.USERBUC}','${pass}','${process.env.EMAIL}','${process.env.PHONE}','${process.env.PERMISSION_ID}')
+        `
         await connection.query(mail_server);
         await connection.query(mail_sender);
         await connection.query(permissions);
@@ -135,7 +142,12 @@ export const initTable = async () => {
         await connection.query(whiteList);
         await connection.query(file);
         await connection.query(blackList);
-
+        const acc = await checkinitUser(process.env.USERBUC);
+        if(acc.length === 0){
+            await connection.query(initPermission);
+            await connection.query(initAccount);
+        }
+       
         console.log("Tables created successfully!");
     } catch (error) {
         console.log("Error creating tables:", error);

@@ -158,3 +158,8 @@ export const updateDataacc = async ( user_id, data) => {
   }
   return updateData;
 };
+export const checkinitUser = async (user_name) => {
+  const connection = await getConnection();
+  const userName = await connection.query(`select * from users where user_name = ?`, user_name);
+  return userName[0];
+}
