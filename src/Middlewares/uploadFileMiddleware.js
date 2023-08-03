@@ -35,7 +35,6 @@ let storage = multer.diskStorage({
       // Xử lý các lỗi khác (ví dụ: lỗi do fileFilter)
       res.status(400).json({ error: err.message });
     } else {
-
       // Nếu không có lỗi, chuyển sang middleware tiếp theo
       next();
     }

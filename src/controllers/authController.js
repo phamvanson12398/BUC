@@ -6,6 +6,8 @@ import {
   createData,
   deleteToken,
   getOneToken,
+  
+  updateDataacc,
 } from "../models/myLibrary";
 
 const generateAccessToken = (id, permission_id) => {
@@ -27,8 +29,13 @@ const generateRefreshToken = (id) => {
   return token;
 };
 
-const refreshToken = (req, res) => {
+const refreshToken = async (req, res) => {
   const access_token = generateAccessToken(req.user.id, req.user.permission_id);
+  const data ={
+    acctoken : access_token
+  }
+  await updateDataacc(req.user_id,data);
+  
   return res.status(200).json({
     message: "success",
     accessToken: access_token,
@@ -104,9 +111,3 @@ export default {
   login,
   logout,
 };
-//if(expToken[0].created_at < expToken[1].created_at){
-//     await deleteOneToken(expToken[0].created_at)
-//     next()
-//  }else{
-//    await deleteOneToken(expToken[1].created_at)
-//    next();

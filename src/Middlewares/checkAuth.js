@@ -45,16 +45,16 @@ const checkLogin = async (req, res, next) => {
     await checkToken(token);
     await checkAccess(token);
 
-    await jwt.verify(token, process.env.SECRECT_ACCESS_TOKEN, (err, decode) => {
+    jwt.verify(token, process.env.SECRECT_ACCESS_TOKEN, (err, decode) => {
       if (err) {
-        return res.status(401).json({ message: "Invalid access token" });
+        throw new Error (err.message)
       } else {
         req.user_id = decode.id;
       }
     });
     const expToken = await getOneToken(req.user_id);
     if (expToken.length !== 0) {
-      await jwt.verify(
+     jwt.verify(
         expToken[0].reftoken,
         process.env.SECRECT_REFRESH_TOKEN,
         async (err, decode) => {

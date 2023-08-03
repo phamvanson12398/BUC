@@ -50,11 +50,10 @@ const addFile = async (req, res) => {
   };
   try {
     await createData(table, data);
-
-    const files = await getAll(table);
+    const files = await checkFile(req.file.filename);
     return res.status(200).json({
       message: "success",
-      data: files,
+      data: files[0],
     });
   } catch (error) {
     return res.status(400).json({

@@ -43,6 +43,7 @@ export const updateData = async (table, id, data) => {
   if (!updateData) {
     throw new Error("Đã xảy ra lỗi : ", error.message)
   }
+  console.log(updateData);
   return updateData;
 
 
@@ -145,3 +146,15 @@ export const checkAccess = async (accesstoken)=>{
     throw new Error("ban da bi out ra!")
   }
 }
+export const updateDataacc = async ( user_id, data) => {
+
+  const connection = await getConnection();
+  let updateData = await connection.query(
+    `UPDATE whiteLists SET ? WHERE user_id = ?`,
+    [data, user_id]
+  );
+  if (!updateData) {
+    throw new Error("Đã xảy ra lỗi : ", error.message)
+  }
+  return updateData;
+};
