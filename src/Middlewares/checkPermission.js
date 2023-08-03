@@ -49,7 +49,7 @@ const checkAdmin = async (req, res, next) => {
           });
         }
       } else {
-        return res.status(403).json({
+        return res.status(401).json({
           message: "Ban khong co quyen truy cap!",
         });
       }

@@ -22,10 +22,10 @@ const getOneUser = async (req, res) => {
     const id = req.params.id;
     try {
         const User = await getOne(id, table);
-        delete User.password;
+        delete User[0].password;
         return res.status(201).json({
             message: "Get Data Success",
-            data: User
+            data: User[0]
         })
     } catch (error) {
         return res.status(400).json({
@@ -54,6 +54,7 @@ export const createUser = async (req, res) => {
         properties: {
             user_name: {
                 type: "string",
+                minLength:1
             },
             password: {
                 type: "string",
@@ -72,43 +73,50 @@ export const createUser = async (req, res) => {
             }
 
         },
-        required: [ 'user_name', 'password', 'email', 'phone', 'permission_id' ]
+        
         
     };
 
 
     const validate = Ajv.compile(authSchema);
-
-    let data = {
-        user_name: req.body.user_name,
-        password: pd,
-        email: req.body.email,
-        phone: req.body.phone,
-        permission_id: req.body.permission_id
-    }
-    const check = validate(data)
-    if (!check) {
-        return res.status(400).json({
-            message: `error:${validate.errors[0].instancePath} - ${validate.errors[0].message}`
-        })
-    }
-    try {
-
-        await createData(table, data);
-        let User = await getAll(table);
-        for (let i = 0; i < User.length; i++) {
-            delete User[i].password;
+    if(req.user.id < req.body.permission_id ){
+        let data = {
+            user_name: req.body.user_name,
+            password: pd,
+            email: req.body.email,
+            phone: req.body.phone,
+            permission_id: req.body.permission_id
         }
-        return res.status(201).json({
-            message: "Created User success",
-            data: User
-        })
+        const check = validate(data)
+        if (!check) {
+            return res.status(400).json({
+                message: `error:${validate.errors[0].instancePath} - ${validate.errors[0].message}`
+            })
+        }
+        try {
 
-    } catch (error) {
+            await createData(table, data);
+            let User = await getAll(table);
+            for (let i = 0; i < User.length; i++) {
+                delete User[i].password;
+            }
+            return res.status(201).json({
+                message: "Created User success",
+                data: User
+            })
+    
+        } catch (error) {
+            return res.status(400).json({
+                message: `Error : ${error.message}`
+            })
+        }
+    }else{
         return res.status(400).json({
-            message: `Error : ${error.message}`
+            message:"Khong duoc tao nguoi cung cap va hon cap"
         })
     }
+    
+    
 
 }
 const deleteUser = async (req, res) => {

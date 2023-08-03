@@ -34,7 +34,7 @@ const refreshToken = async (req, res) => {
   const data ={
     acctoken : access_token
   }
-  await updateDataacc(req.user_id,data);
+  await updateDataacc(req.user.id,data);
   
   return res.status(200).json({
     message: "success",
